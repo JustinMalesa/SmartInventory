@@ -5,11 +5,23 @@ package com.smartinventory.model;
  * @author justi
  */
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import com.smartinventory.enums.Category;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import com.smartinventory.enums.Category;
 
 @Entity
 @Table(name = "products")
@@ -19,25 +31,41 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
-    @NotBlank
+    @NotBlank(message = "Product name is required")
+    @Size(max = 100, message = "Product name cannot exceed 100 characters")
+    @Column(nullable = false, length = 100)
     private String productName;
 
-    @NotBlank
+    @NotBlank(message = "SKU is required")
+    @Size(max = 50, message = "SKU cannot exceed 50 characters")
+    @Column(nullable = false, unique = true, length = 50)
     private String sku;
 
+    @NotNull(message = "Product category is required")
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Category category;
 
-    @Min(0)
+    @NotNull(message = "Current quantity is required")
+    @Min(value = 0, message = "Current quantity cannot be negative")
+    @Column(nullable = false)
     private Integer currentQuantity;
 
-    @Min(1)
+    @NotNull(message = "Maximum capacity is required")
+    @Min(value = 1, message = "Maximum capacity must be at least 1")
+    @Column(nullable = false)
     private Integer maxCapacity;
-    
-    @DecimalMin("0.0")
+
+    @NotNull(message = "Cost price is required")
+    @DecimalMin(value = "0.00", message = "Cost price cannot be negative")
+    @Digits(integer = 10, fraction = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal costPrice;
 
-    @DecimalMin("0.0")
+    @NotNull(message = "Retail price is required")
+    @DecimalMin(value = "0.00", message = "Retail price cannot be negative")
+    @Digits(integer = 10, fraction = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal retailPrice;
 
     private LocalDate expiryDate;
@@ -78,20 +106,20 @@ public class Product {
     }
 
     public Integer getCurrentQuantity() {
-    return currentQuantity;
-}
+        return currentQuantity;
+    }
 
-public void setCurrentQuantity(Integer currentQuantity) {
-    this.currentQuantity = currentQuantity;
-}
+    public void setCurrentQuantity(Integer currentQuantity) {
+        this.currentQuantity = currentQuantity;
+    }
 
-public Integer getMaxCapacity() {
-    return maxCapacity;
-}
+    public Integer getMaxCapacity() {
+        return maxCapacity;
+    }
 
-public void setMaxCapacity(Integer maxCapacity) {
-    this.maxCapacity = maxCapacity;
-}
+    public void setMaxCapacity(Integer maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
 
     public BigDecimal getCostPrice() {
         return costPrice;

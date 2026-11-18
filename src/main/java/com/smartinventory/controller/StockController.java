@@ -7,33 +7,79 @@ package com.smartinventory.controller;
  */
 
 import com.smartinventory.service.StockService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import java.util.Map;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/stock")
 public class StockController {
 
-    @Autowired
-    private StockService stockService;
+    private final StockService stockService;
 
-    @PostMapping("/inbound")
-    public String inbound(
-            @RequestParam Long productId,
-            @RequestParam Integer quantity) {
-
-        return stockService.recordInbound(
-                productId,
-                quantity);
+    // Constructor injection.
+    public StockController(StockService stockService) {
+        this.stockService = stockService;
     }
 
-    @PostMapping("/outbound")
-    public String outbound(
-            @RequestParam Long productId,
-            @RequestParam Integer quantity) {
+    // Record incoming stock.
+    @PostMapping("/inbound")
+    public ResponseEntity<Map<String, String>> inbound(
+            @Valid @RequestBody StockMovementRequest request) {
 
-        return stockService.recordOutbound(
-                productId,
-                quantity);
+        String message = stockService.recordInbound(
+                request.productId(),
+                request.quantity()
+        );
+
+        return ResponseEntity.ok(Map.of("message", message));
+    }
+
+    // Record outgoing stock.
+    @PostMapping("/outbound")
+    public ResponseEntity<Map<String, String>> outbound(
+            @Valid @RequestBody StockMovementRequest request) {
+
+        String message = stockService.recordOutbound(
+                request.productId(),
+                request.quantity()
+        );
+
+        return ResponseEntity.ok(Map.of("message", message));
+    }
+
+    // Request body validation.
+    public static class StockMovementRequest {
+
+            @NotNull(message = "Product ID is required")
+            private Long productId;
+
+            @NotNull(message = "Quantity is required")
+            @Positive(message = "Quantity must be greater than zero")
+            private Integer quantity;
+
+    public Long productId() {
+        return productId;
+    }
+
+    public Integer quantity() {
+        return quantity;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+            }
+        {
     }
 }
