@@ -149,3 +149,25 @@ src/
 ## Author
 
 Developed by **Justin Malesa** as a Java backend development portfolio project.
+
+## Screenshots
+
+### Product Management
+Displays the products retrieved from the REST API.
+
+![Product Management](screenshots/product-management.png)
+
+### Stock Management
+Shows a successful incoming stock movement.
+
+![Stock Management](screenshots/stock-management.png)
+
+### Inventory Value Report
+Displays the total inventory value and category breakdown.
+
+![Inventory Report](screenshots/inventory-report.png)
+
+### Unit Tests
+Shows the results of the automated unit tests.
+
+![Unit Tests](screenshots/unit-tests.png)
