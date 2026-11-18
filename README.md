@@ -125,6 +125,8 @@ mvn test
 
 ## Project Structure
 
+## Project Structure
+
 The project follows a layered structure to separate application responsibilities.
 
 ```text
